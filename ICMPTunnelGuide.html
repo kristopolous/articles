@@ -1,0 +1,218 @@
+<!doctype html5>
+<html><head>
+<title>Sidestep Wireless Logins by Routing All Traffic Through Measly Little Ping Packets</title>
+<link rel=stylesheet href=blog.css>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+#content {width: 550px}
+#content li{font-size:0.95em}
+h2{margin-top:3em}
+h3{font-size:1.15em;font-weight:bold;margin-top:2.5em;margin-bottom:-.25em;color:rgba(0,0, 20, 0.9)}
+h4{font-size:1.05em;margin-bottom:-0.5em;margin-top:2.75em}
+q{display:inline;font-style:italic;margin:0;background:none;padding:0}
+</style>
+<meta name=description content="A step-by-step guide for using ICMP Pings to route all your internet traffic">
+</head>
+<div id=content>
+<h1>Sidestep Wireless Logins</h1>
+<h2 id="sub">Route your Traffic Through Measly Little Ping Packets</h2>
+
+<p>The problem:</p>
+
+<ul>
+<li>There's an unencrypted access point which requires a login you don't have.</li>
+<li>But, you can <code>ping</code> any address on the internet.</li>
+<li>You think, <q>"Wait, since an ICMP payload can be any arbitrary data (read, traffic)..."</q></li>
+</ul>
+
+<h2>The Gameplan</h2>
+
+<em>
+  <p>Set up a series of "layers" that sit within the ICMP payload and then route your internet traffic through this magic ping technology.</p>
+</em>
+
+<p>This guide goes over:</p>
+
+<ol>
+<li>Opening up an ICMP tunnel on a server you have somewhere.</li>
+<li>Forwarding the server's SSH port to a local port on your laptop.</li>
+<li>Using SSH to set up a SOCKS proxy using this local port.</li>
+<li>And then, ambitiously use <code>sshuttle</code> to push all your internet traffic through the setup.</li>
+</ol>
+
+<h6>Blam!</h6>
+<p>Now you'll have a completely transparent layer that works over ICMP.<br>
+You'll be able to do any internet thing you want.<br>
+And all without ever having to log in to the access point. Score!</p>
+
+<center><img src='fleur.png'></center>
+<h3>What you'll need normal internet access for</h3>
+<p>You need to set some things up and get software on your laptop with either a normal internet connection beforehand or tethered over a smartphone.</p>
+<p>Specifically, you'll need to do:</p>
+<ul>
+<li>The server setup.</li>
+<li>Downloading of <code>ptunnel</code> and <a href="https://github.com/apenwarr/sshuttle"><code>sshuttle</code></a> on the client (a.k.a your laptop).
+<em><code>sshuttle</code> is written in Python version 2. Make sure you have that installed on your laptop.</em>
+</li>
+</ul>
+
+<h3>Server Setup</h3>
+
+<p>The server setup uses <a href="http://www.cs.uit.no/~daniels/PingTunnel/">ptunnel</a> which is available through <code>apt-get</code> in debian-based distributions. You'll need to have <code>sudo</code> access to the server because <code>ptunnel</code> needs to do some privileged operations.</p>
+
+<p>Running <code>ptunnel</code> without any arguments should work.  It's probably a good idea to make it a respawnable program in case it crashes.</p>
+
+<p>There's very proper complex ways to respawn things.</p>
+
+<p>There's also a very <a href="http://www.jwz.org/doc/worse-is-better.html">easy</a> one. We'll do that.<br>
+The snippet below does the following:</p>
+
+<ol>
+<li>Creates a script (file) named <code>ptunnel-loop.sh</code>. <small>[line 1]</small></li>
+<li>Make it run <code>ptunnel</code> until it crashes (err, exits), then starts it up again. <small>[lines 2-6]</small></li>
+<li>Make the script executable. <small>[line 7]</small></li>
+<li>Run the script as <code>root</code> and send it to the background. <small>[line 8]</small></li>
+<li>Disown the process (don't worry if this spits an eror). <small>[line 9]</small></li>
+<li>Tell the kernel to not respond to ping requests. <small>[line 10]</small></li>
+<li>Log out. <small>[line 11]</small></li>
+</ol>
+
+<p><a href="https://www.youtube.com/watch?v=ay6GjmiJTPM&feature=kp">Step-by-step</a>:</p>
+<pre class="brush: bash">
+$ cat > ptunnel-loop.sh
+#!/bin/sh
+while [ 0 ]; do
+  ptunnel
+done
+^D
+$ chmod +x ptunnel-loop.sh 
+$ sudo ./ptunnel-loop.sh &
+$ disown
+$ sudo sysctl net.ipv4.icmp_echo_ignore_all=1
+$ logout
+</pre>
+
+<p>The server setup is completely done now.</p>
+
+<h3>Client Setup</h3>
+
+<em>You should probably start up a <code><a href="http://tmux.sourceforge.net/">tmux</a></code> or <code><a href="http://www.gnu.org/software/screen/">screen</a></code> session before going on (although this is not a technical requirement at all).</em>
+
+<p>On the client side (your laptop), after installing <code>ptunnel</code>, run something like this in the terminal:</p>
+
+<pre class="brush: bash">
+$ sudo ptunnel -p &lt;server&gt; -lp 8005 -da 127.0.0.1 -dp 22
+</pre>
+
+<p>Where: 
+<ul>
+<li><code>server</code> is the server hostname or ip address from above.</li>
+<li><code>da</code> and <code>dp</code> are the <q>destination</q> host and port from the perspective of how the server sees the world.
+<em>The settings used above are equivalent to the more common syntax of "127.0.0.1:22" meaning port 22 on the server's idea of "127.0.0.1".</em></li>
+<li><code>lp</code> is the forwarded client port that will be tunneled, in our case, to "127.0.0.1:22" on the server.</li>
+</ul>
+
+<p>Here is a rundown of what is happening:</p>
+<ol>
+<li>The laptop's <code>ptunnel</code> negotiates with the server's <code>ptunnel</code> saying <q>"Hey, I want you to forward traffic to 127.0.0.1:22"</q>.</li>
+<li>The laptop's <code>ptunnel</code> then opens up, in our case, port 8005 locally and will take any traffic that hits it and send it to the server's <code>ptunnel</code> (all over ICMP).</li>
+<li>The server's <code>ptunnel</code> will take this traffic and send it to "127.0.0.1:22".</li>
+</ol>
+
+<p>So if everything works you should be able to do something like</p>
+
+<pre class="brush: bash">
+$ ssh localhost -p 8005
+</pre>
+
+<p>And log-in in to the remote server.</p>
+
+<p>Congratulations, you just ssh'd over ICMP pings.</p>
+
+<p><a href="https://www.youtube.com/watch?v=LSJB1zrBrGY">Here is a video of it in action</a>.</p>
+
+<em>If you get the error <code>key_verify failed for server_host_key</code> from ssh, make sure you are only running 1 instance of <code>ptunnel</code> on the server.</em>
+
+<h3>Setting up a SOCKS proxy</h3>
+
+<p>SSH has a feature which allows you to create a <a href="http://en.wikipedia.org/wiki/SOCKS">SOCKS</a> proxy from an <code>ssh</code> connection with the <code>-D</code> option.</p>
+
+<p>If you can <code>ssh</code>, you can probably create a SOCKS proxy.</p>
+
+<p>Start this up and leave it running:</p>
+
+<pre class="brush: bash">
+$ ssh -v -N -D localhost:8080 -p 8005 localhost
+</pre>
+
+<p>Where <code>-D localhost:8080</code> states that </p>
+
+<ul>
+<li>we want to have a SOCKS proxy listening on port 8080 of our local machine (your laptop)</li>
+<li>and send this traffic to port 8005</li>
+<li>which is forwarded (via ptunnel) to the SSH port on our remote machine</li>
+<li>and all over ICMP.
+<em><code>-v</code> and <code>-N</code> are optional arguments for showing verbose output, and not spawning a remote shell, respectively.  You can leave them out if you want (although the "as many vs as possible" method of debugging seems to almost always do the trick).</em>
+</li>
+</ul>
+
+<p>Congratulations, now you have a SOCKS proxy over SSH over ICMP.</p>
+
+<p>You *<i>could</i>* stop here.  Most applications can be configured to connect
+through a SOCKS proxy if you poke around enough.</p>
+
+<p>But that's nonsense, this is Linux! We can do better!</p>
+
+<h3>Getting everything to work without special configuration</h3>
+
+<p><a href="https://github.com/apenwarr/sshuttle">sshuttle</a> is a clever little program that gets all of our internet traffic to tunnel through our SSH connection with very little effort.</p>
+
+<p>It is available through <code>apt-get</code> in debian-based distributions or can be git-cloned from the above linked-to github page.</p>
+
+<p>For me, I <code>cd'd</code> into the <code>git</code> cloned version and ran:</p>
+
+<pre class="brush: bash">
+$ sudo ./sshuttle &lt;username&gt;@localhost:8005 0.0.0.0/0 -v
+</pre>
+
+<p>Where <code>username</code> is my non-root user, and <code>localhost:8005</code> is the port I'm forwarding through <code>ptunnel</code>.</p>
+
+<p>You'll see <code>iptables</code> messages pass by - it's doing all that confusing hard work for you.</p>
+
+<p>Now go to your web browser and watch a cat video. Really, that's it. Have fun.</p>
+
+<em><code>-v</code> is an optional argument for verbose output. Highly recommended.</em>
+
+<h3>How well does this work?</h3>
+
+<p>I've done this various times and my <a href="http://speedtest.net">speedtest.net</a> ratings are always at least 1MB/s up and down ... usually around 3MB/s or so.</p>
+
+<p>Of course I could carefully measure "regular" internet speed and then state this ICMP tunneling technique as a quotient, but really, if you are going from 0 internet to 2MB/s then who cares?!</p>
+
+<p>It's not like you'll ever see the "regular" speed for that network anyway.</p>
+
+<h3>Wait, none of this stuff is working.</h3>
+<p>I tried to keep the guide dead-simple so not to be confusing, but I did leave a few trouble-shooting tips out:</p>
+<p>You may need to:</p>
+<ul>
+<li>On the server: 
+	<ul>
+	<li>Set <code>sudo sysctl net.ipv4.icmp_echo_ignore_all=1</code> to avoid responding to ICMP inquiries.</li>
+	<li>Set <code>sudo sysctl net.ipv4.icmp_ratelimit=0</code> to disable rate limiting of ICMP pings.</li>
+	<li>Make sure you have <b>only 1 instance</b> of <code>ptunnel</code> running</li>
+	</ul>
+</li>
+<li>On the client:
+	<ul>
+	<li>Flush your <code>iptables</code>. (running <code>iptables -X</code>, then <code>iptables -F</code>, and then <code>iptables -t nat -X</code> seems to do the trick)</li>
+	<li>Tweak your <code>GatewayPorts</code> setting in <code>/etc/ssh_config</code> so that the <code>-D</code> option of ssh works.</li>
+	</ul>
+</li>
+</ul>
+<p>And if all else fails, run everything again with a <code>-vvvvvvvvvv</code> option. ;-)</p>
+<p>There's a <a href="http://www.reddit.com/r/linux/comments/22tsil/sidestep_wireless_logins_by_routing_all_traffic/">reddit post</a> associated with this article for commenting. I'll happily answer any technical questions there.</p>
+</div><!-- #content -->
+
+<p style=font-size:0.8em><b>About:</b><br>Written by Chris McKenzie. (Shameless <a href=http://github.com/kristopolous>github link</a>)<br>Link tooltips are done through my <a href="http://rt2.me">rt2.me</a> project.</p>
+<script src=note_header.js></script>
+<script src=http://rt2.me/href.js></script>
