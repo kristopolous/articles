@@ -1,0 +1,323 @@
+<!doctype html5>
+<html><head>
+<title>How to do software engineering contracts</title>
+<link rel=stylesheet href=blog_bare.css>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+<style>
+#content li{font-size:0.95em;padding-left:0.35em}
+.center,p{width: 95%}
+pre{white-space:normal;line-height:1.35em}
+h2{margin-top:3em}
+h3{font-size:1.15em;font-weight:bold;margin-top:2.5em;margin-bottom:-.25em;color:rgba(0,0, 20, 0.9)}
+h4{font-size:1.05em;margin-bottom:-0.5em;margin-top:2.75em}
+blockquote{font-family:'Source Sans Pro', sans-serif;display:inline-block;font-style:normal;margin:0.25em 0.75em;background:none;padding:0 0.95em; border-left: 4px double rgba(200,200,216,0.7);background:rgba(250,250,240, 0.9);width:80%}
+blockquote p { margin: 0.5em 0;padding:0;width:auto}
+tt{display:inline}
+tt:before { content: ' ['}
+tt:after { content: '] '}
+q{display: inline; color: rgba(4,8,18,0.9);margin:0;padding:0;letter-spacing:-0.02em;font-size:1em; font-family: 'Droid Serif', serif;font-style:italic}
+.center{display:block;margin-top:2em;text-align:center}
+.center img{display:inline-block}
+blockquote h3 {margin-top: 1.25em}
+
+</style>
+<meta name=description content="A step-by-step guide for software contracting">
+</head>
+<div id=content>
+<h1>How to do Software Engineering Contracts</h1>
+<h2>Introduction</h2>
+<p>Software projects have a notorious reputation of being later than expected, more expensive than estimated and sometimes not even functional.</p>
+<p>If you are like me, you are in this field because you want to create great new things. Things that improve lives.</p>
+<p>However, you often find that people have:</p>
+<ul>
+  <li>Unreasonable expectations.
+  <li>Incorrect assumptions on how things work.
+  <li>Different needs than the ones you addressed.
+  <li>No concern at all for the needs you have addressed.
+  <li>No interest in engaging with, or learning how to use what you've built.
+  <li>An overall dissatisfaction with, and no apprecation for, the amount of time and care you've spent on things.
+</ul>
+<p>In a situation where that person is expected to pay you, things can get ugly.</p>
+<p>How do things go so sour?  Is there an easy way to fix this?</p>
+
+<h2>This System Works.</h2>
+
+<p>Through trial-and-error I developed a system that avoids all the calamity outlined above and keeps the client happy, willing to pay, and coming back for more.</p>
+<p>The client can be lofty and impercise or stubborn and pedantic - it works regardless. The project gets done earlier and cheaper than expected and I still get to sleep and work a reasonable, comfortable number of hours.</p>
+
+<div class=center><img src=fleur.png></div>
+
+<h2>Step 1. Get the client to put what they want in prose using normal informal language.</h2>
+
+<p>Secretly, we can call this <q>"spec writing"</q> but that sounds really stuffy and formal.  You want to keep the hurdles low and goals simple and achievable. It's better not to use words that sounds like a lot of work they don't know how to do.</p>
+<p>Instead, ask for user-stories and questions like <q>"How would you envision the finished product to be used?"</q> or <q>"Ok, so how would someone achieve (pick a specific task)?"</q>.</p>
+
+<p>A response for a ficticious business idea may look like this:</p>
+
+<blockquote>
+<p>InstaIce is an ice-cream delivery service.</p>
+<p>A user goes to the website and can either proceed as a guest or log in through Facebook.</p>
+<p>After logging in, they see their most ordered flavors, the most popular flavors, and the newest ones.</p>
+<p>The user clicks on as many flavors as they want and the flavors are added to their cart.</p>
+<p>After they are satisfied, they click a "Make me happy" button.</p>
+<p>Eat24 then delivers the ice-cream to their door.</p>
+</blockquote>
+
+<h2>Step 2. Break down the prose into tasks.</h2>
+
+<p>Edit a copy of the document and stuff incremental numbers between the appropriate words.</p>
+<p>You are transforming the prose to an eventual spec that:
+<ul>
+  <li>Defines the product
+  <li>Is used for estimates
+  <li>Describes the testing
+  <li>Helps the client talk about the product to others and not inadvertently invent parts that won't be there.
+</ul>
+
+<p>Take the exact words and re-arrange them into a numbered form.  There are small, subdivid-able tasks hidden in the user-story.</p>
+
+<blockquote>
+<p>InstaIce is an ice-cream delivery service.</p>
+<p><tt>1</tt> A user goes to the website and can either </p>
+<p><tt>2</tt>proceed as a guest or </p>
+<p><tt>3</tt>log in through facebook.</p>
+<p>After logging in, <tt>4</tt>they see </p>
+<p><tt>5</tt>their most ordered flavors,</p>
+<p><tt>6</tt>the most popular flavors,</p>
+<p><tt>7</tt>and the newest ones.</p>
+<p><tt>8</tt>The user clicks on as many flavors as they want</p>
+<p><tt>9</tt>and the flavors are added to their cart</p>
+<p>After they are satisfied, <tt>10</tt>they click a "Make me happy" button.</p>
+<p><tt>11</tt>Eat24 then delivers the ice-cream to <tt>12</tt>their door.</p>
+</blockquote>
+
+<h2>Step 3. Make sure that the client knows about this numbering. Get their approval.</h2>
+
+<p>This dividing of the words the client wrote into actual chunks of work is going to be the basis for the contract. The client should see it and agree that you haven't changed the wording and that they haven't left anything out.</p>
+<p>Getting a coherent narrative and well-defined product out of this stage of the process is the only goal.</p>
+<p>Permit the client to change things or even toss out the previous document and write a brand new one. Nothing is signed yet and it's still early in the game.  Changing things now is the easiest and cheapest time to do so.</p>
+
+
+<h2>Step 4. Define What is Needed.</h2>
+
+<p>Translate the human prose into technical task items that can be discussed and further sub-divided as needed. They should be phrased in ways that the client can still understand or can be taught the meaning of in under a minute.</p>
+
+<p>This process also helps raise hidden items that everyone at the table may have accidentally glossed over and forgot to talk about.</p>
+
+<p>Feel free to discuss at length exactly what the client means by each word they use. Oftentimes an assumed but mutually conflicting definition left uncheck can lead to a hidden amount of work for you later on.</p>
+<p>Everything has to be built, and building things always takes time. And that time, well, you get paid for it.  So make sure you get clarity here.</p>
+
+
+<blockquote>
+<ol>
+  <li> We need a website.
+  <li> Authentication to the site.
+  <li> Facebook integration
+  <li> A store and CMS
+  <li> An order aggregation function
+  <li> An aggregation function over all orders
+  <li> A way to sort by date with a limit
+  <li> A (probably) ajax cart system
+  <li> Definition of abandoned cart, etc
+  <li> Cart commitment, change of state
+  <li> Eat24 integration
+  <li> User needs to be a part of Eat24 somehow somewhere.
+</ol>
+</blockquote>
+
+<h2>Step 5. Set the Priorities.</h2>
+
+<p>Go back to the client, find out how important these tasks are and how much they value them.</p>
+
+<p>You need to understand what part of the story is more important than others.</p>
+<p>Setting priorities at this point instead of earlier allow for the client to have more of an insight into how significant a task may be. When someone understands how long something could take and generally what trouble it is, they can often change their values.</p>
+
+<blockquote>
+<h3> High value</h3>
+  <ul>
+    <li> We need a website.
+    <li> Authentication.
+    <li> A store and CMS
+    <li> A way to sort by date with a limit
+    <li> Cart commitment, change of state
+    <li> Eat24 integration
+    <li> User needs to be a part of Eat24 somehow somewhere.
+  </ul>
+
+<h3> Medium value </h3>
+  <ul>
+    <li> A (probably) ajax cart system
+    <li> Definition of abandoned cart, etc
+  </ul>
+
+<h3>Low value</h3>
+  <ul>
+    <li> Facebook integration
+    <li> An order aggregation function
+    <li> An aggregation function over all orders
+  </ul>
+</blockquote>
+
+<h2>Step 6. Range Estimates.</h2>
+
+<p>Use this as an basis for how much effort you should put into each task and do <i>range</i> estimates.</p>
+<p>Sometimes a client is willing to do something you would personally think is a phenomenal waste of cash. Other times, they may simply just not care about something you think is really important.</p>
+<p>Part of your job is to communicate your professional engineering opinion in order to get to a successful outcome.</p>
+<p>Breaking down things like this and telling the client your estimates help keep that clear and coherent.</p>
+<p>Giving a range is important since some things have a very high variance. In making estimates, you should ask yourself the following:</p>
+<ul>
+  <li>How long does this take if everything goes well?
+  <li>What's the longest this has taken me when I encounter nothing but problems?
+</ul>
+<p>Use these answers to form a low and a high end to your estimates. Tell the client both.</p>
+
+<blockquote>
+<h3> High value</h3>
+  <ul>
+    <li> ( 10 - 12 hr ) We need a website.
+    <li> ( 2 - 4 ) Authentication.
+    <li> ( 6 - 9 ) A store and CMS
+    <li> ( 1 - 3 ) A way to sort by date with a limit
+    <li> ( 6 - 9 ) Basic cart, Cart commitment, change of state
+    <li> ( 4 - 7 ) Eat24 integration
+    <li> ( 0 - 4 ) User needs to be a part of Eat24 somehow somewhere.
+  </ul>
+
+<h3> Medium value </h3>
+  <ul>
+    <li> ( 2 - 4 ) A (probably) ajax cart system
+    <li> ( 1 - 4 ) Definition of abandoned cart, etc
+  </ul>
+
+<h3>Low value</h3>
+  <ul>
+    <li> ( 1 - 3 ) Facebook integration
+    <li> ( 2 - 4 ) An order aggregation function
+    <li> ( 2 - 4 ) An aggregation function over all orders
+  </ul>
+</blockquote>
+
+<h2>Step 7. Arrange Estimates into Weeks.</h2>
+
+<p>Programming is hard and exhausting. There are lots of other administrative tasks you need to do in a project besides writing the code. Leave empty time in the week for that by setting aside smaller weeks.</p>
+<p>Use the higher numbers to do the calculations and try not to commit yourself to over about 25 hours a week.</p>
+
+<blockquote>
+<h3> Week 1 (18 - 25 hours) </h3>
+  <ul>
+    <li> ( 10 - 12 hr ) We need a website.
+    <li> ( 2 - 4 ) Authentication.
+    <li> ( 6 - 9 ) A store and CMS
+  </ul>
+
+<h3> Week 2 (11 - 23 hours) </h3>
+  <ul>
+    <li> ( 6 - 9 ) Basic cart, Cart commitment, change of state
+    <li> ( 1 - 3 ) A way to sort by date with a limit
+    <li> ( 4 - 7 ) Eat24 integration
+    <li> ( 0 - 4 ) User needs to be a part of Eat24 somehow somewhere.
+  </ul>
+
+<h3> Week 3 (8 - 19 hours) </h3>
+  <ul>
+    <li> ( 2 - 4 ) A (probably) ajax cart system
+    <li> ( 1 - 4 ) Definition of abandoned cart, etc
+    <li> ( 1 - 3 ) Facebook integration
+    <li> ( 2 - 4 ) An order aggregation function
+    <li> ( 2 - 4 ) An aggregation function over all orders
+  </ul>
+</blockquote>
+
+<h2>Step 8. Commit to the Estimate.</h2>
+
+<p>You need to give yourself plenty of room here because however careful you've been</p>
+<ul>
+  <li> You've left things out.
+  <li> The client will ask for more, and expect it to be covered in the initial estimate
+  <li> You want to come in <i>under</i> time and <i>under</i> budget. Quoting a high number and billing less 
+  makes you look like a rockstar.  Quoting a low number and billing more, makes you look like an unorganized
+  incompetent amateur. Really - just don't do it.
+</ul>
+
+<p>Add up the high end of the estimates (67 hours) and then add the following: </p>
+
+<ul>
+  <li> 2 weeks minimum for slippage (more on larger projects)
+  <li> 5 hours of overhead for client interaction per week (5 * 5 = 25)
+  <li> 20% for QA time (13.4)
+  <li> 10 hours for overhead on your part like 
+    <ul>
+      <li>getting SSL keys
+      <li>registering the domain
+      <li>setting up the server
+      <li>database configuration
+    </ul>
+  </li>
+  <li> 25% for the unknown unknowns (16.75)
+</ul>
+
+<p> Add it together: </p>
+
+<pre>67 + 25 + 13.4 + 19 + 16.75 = 141.15</pre>
+
+<p> Multiply it by your rate (say, $1 an hour, just to be easy.): $141.15.</p>
+
+<p>State the following:</p>
+
+<em>I will get this definition of InstaIce done in 5 weeks for under $141.15.</em>
+
+<p>Give everything to the client, cross fingers.</p>
+
+<h2>Step 9. Track all time spent and label it.</h2>
+
+<p>Use a time tracker that supports tagging.  Use the tags above so that you can see how long you estimated versus how much time you spent.</p>
+
+<p>Only bill the client for the amount of time you actually spend. Claiming you worked hours that you didn't is fraudulant and dishonest.</p>
+
+<p>Maintaining trust with the client is the best way to keep them feeling obliged to pay you for the work. In contracting, compensation dispute is a 
+common occurance after work tendered.</p>
+
+<p>In this system you have a solid audit trail of everything that happened with the client explicitly giving you the thumbs up at every step.</p>
+
+<h2>Step 10. Set up weekly meetings.</h2>
+
+<p>Go over what you did, what the client expectations were, how long it took you, and how you are looking regarding the big picture.</p>
+<p>The client will inadvertently ask for more.  Depending on the significance of the ask, demand either part or all of this process again. Some clients need
+to be taught that <q>"Yes, everything that takes my time, costs you money - sorry."</q></p>
+<p>These meetings can take anywhere from about 1 - 3 hours. Be cautious about charging for them. It's may not always be the right thing to do if you value the client.</p>
+
+<h2>Step 11. Success.</h2>
+
+<p>When I do this, and stick with it, clients generally have a huge backlog of things that "didn't make it" - another phase that they'd like to do the process on.</p>
+
+<p>That's a sure sign of success: They are following the system, want to continue working with me, and want to do the process again.</p>
+
+<p>The reason the system works is that you've done the three key parts of negotiation: <b>Clarity</b>, <b>Transparency</b>, and <b>Fairness</b>.
+
+<h3> Clarity </h3>
+
+<p>All parties know what is going to be done and when to expect it. They even authored a way to verify it. At the end, you can go through the initial document and see that their goals have been realized. It's a great feeling.</p>
+
+<h3> Transparency </h3>
+
+<p>Seeing all those estimate numbers helps the client understand the nature of tasks better and can generally, after a while, know the ballpark even before asking.</p>
+<p>Additionally they are never wondering <q>"What are you doing?"</q> or <q>"What's taking so long?"</q> or <q>"How long do I have to wait?"</q>.  All those questions have been answered before you start.  They'll know all those answers weeks in advance.</p>
+
+<h3> Fairness </h3>
+
+<p>If you are decent at what you do, the client can take your estimates to any competitor and get them independently validated.  Additionally, you've accounted for all the hours worked and what you were doing for them.  Reciprocity and a debt obligation is now firmly established.</p>
+
+<div class=center><img src=fleur.png></div>
+
+<h2>Conclusion</h2>
+
+<p>I hope these steps help you avoid the common nightmares in contracting and keep your relationships with your clients healthy and happy.</p>
+
+<p>Thanks for reading. <a href="http://www.reddit.com/r/programming/comments/2i4s2b/how_to_do_software_engineering_contracts/">comments</a></p>
+
+<p>by Chris McKenzie. <a href=http://github.com/kristopolous/>github</a></p>
+
+<script src=note_header_bare.js></script>
+
