@@ -16,7 +16,9 @@ h2{margin-top:2em}
 h3{font-size:1.15em;font-weight:bold;margin-top:2.5em;margin-bottom:-.25em;color:rgba(0,0, 20, 0.9)}
 h4{font-size:1.05em;margin-bottom:-0.5em;margin-top:2.75em}
 pre{font-size:14px;background:#f4f4f4;padding:0.5em;width:90%}
-q{display:inline;color:rgba(4,8,18,0.9);margin:0;padding:0;letter-spacing:-0.02em;font-size:1em;font-family:'Droid Serif',serif;font-style:italic}
+blockquote{display:inline;color:rgba(4,8,18,0.9);margin:0;padding:0;letter-spacing:-0.02em;font-size:1em;font-family:'Droid Serif',serif;font-style:italic}
+blockquote > a {margin-bottom:0.5em;display:inline-block}
+blockquote p{border-left: 2px solid #ddF;padding:0.5em 1em;margin:0 0 0 0.5em}
 img{border:2px solid #ddd;display:inline-block;padding:0.5em;margin: 0 1em}
 @media only screen and (max-device-width: 767px) {
   img{margin:0}
@@ -49,12 +51,12 @@ img{border:2px solid #ddd;display:inline-block;padding:0.5em;margin: 0 1em}
 <p>You'll probably want to do this since the inner DOM nodes in <code>0.11.x</code> have changed from <code>&lt;p&gt;</code> tags to <code>&lt;div&gt;</code> tags. Oh, that brings us to style.</p>
 <h4>Stylizing</h4>
 <p>You'd think that being explicitly referenced in the Bootstrap documentation as a supported library (in <a href="http://getbootstrap.com/2.3.2/javascript.html#typeahead">2.3.2</a> but not 3.x<sup>1</sup>), <code>typeahead.js</code> would structure their HTML as a Bootstrap-friendly style drop-down&hellip;</p>
-<q>2015-06-16 Note: This history isn't correct. <a href=https://github.com/kristopolous/articles/issues/1>Chris Rebert explains</a>: 
+<blockquote>Note from 2015-06-16: This history isn't correct. <a href=https://github.com/kristopolous/articles/issues/1>Chris Rebert explains</a>: 
   <p>To dispel a key misconception here: The similarity of the names is indeed unfortunate & confusing, but Twitter's Typeahead.js is completely separate from and has never shared any code with Bootstrap v2's typeahead widget. I imagine that the fact that old versions of Twitter's Typeahead.js offered optional Bootstrap integration also contributed to this confusion.
   </p>
   <p>In Bootstrap v3, Bootstrap's own typeahead widget from v2 was removed due to its complexity and its suffering from some significant bugs. The Bootstrap Core Team recommended that users migrate to Twitter's Typeahead.js since it was a superior alternative (see http://getbootstrap.com/migration/#notes), and since there was hope that Twitter's Typeahead.js would continue to offer an optional Bootstrap integration (which sadly didn't pan out).</p>
   <p>With the release of version 3, Bootstrap ceased to be affiliated with Twitter (see twbs/bootstrap#9899), which makes Typeahead.js's lack of integration/compatibility with Bootstrap more understandable.</p>
-</q>
+</blockquote>
 
 <p>In Bootstrap 3, the <a href="https://github.com/twbs/bootstrap/blob/efe2023014ec90f35c0f722af6f3ec7a8eab720e/dist/css/bootstrap.css#L3605">selectors for the dropdown</a> are <code>.dropdown-menu &gt; li &gt; a</code>. However, in <code>0.10.x</code> the dropdowns are <code>span &gt; div &gt; p</code> and in <code>0.11.x</code>, it's <code>div &gt; div &gt; div</code>.</p>
 <p>If you think typeahead.js will still work with Bootstrap through the <a href="https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md#class-names"><code>classNames</code> interface</a> &mdash; it doesn't and the object keys and class names have changed <a href="https://github.com/twitter/typeahead.js/blob/v0.10.5/doc/jquery_typeahead.md#look-and-feel">between the versions</a>.</p>
@@ -94,7 +96,7 @@ img{border:2px solid #ddd;display:inline-block;padding:0.5em;margin: 0 1em}
 <p>The worst thing you can do is make your users think they've made a mistake after sinking significant time and effort and then either holding their nose as they try to just "make it work", or worse, abandon their efforts entirely and think terrible thoughts about you.</p>
 <h2>Conclusion</h2>
 <p>Nobody builds things to make enemies.  We're in this to help people. We write APIs for people to make better software &mdash; not waste their time unraveling our implementation to finish theirs. The whole point is to remove a problem, not create new ones.  Exhausting time, effort, and mind-share due to poor release management is a terrible shame.</p>
-<p>Their are real people behind every project and we must never forget that.  It's easy to remove the human from the experience and think evil malevolent thoughts as you sip that third cup of coffee trying to get that thing done that <q>should have been 15 fucking seconds</q>.</p>
+<p>Their are real people behind every project and we must never forget that.  It's easy to remove the human from the experience and think evil malevolent thoughts as you sip that third cup of coffee trying to get that thing done that <i>should have been 15 seconds</i>.</p>
 <p>We must do better.</p>
 </body>
 </html>
